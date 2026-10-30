@@ -6,10 +6,20 @@
   <meta name="description" content="Portfolio de Mahuna Raphaël Dominique MEDJE — Infirmier Diplômé d'État, Agent de Santé Communautaire Qualifié et Spécialiste en Gestion de Projet 360°.">
   <title>Mahuna Raphaël Dominique MEDJE — Portfolio Santé Publique & Gestion de Projet 360°</title>
 
-  <!-- Google Fonts: Urbanist & Outfit -->
+  <!-- Preload portrait critique -->
+  <link rel="preload" href="assets/mahuna-cutout.png" as="image" type="image/png">
+
+  <!-- Preload CV PDF -->
+  <link rel="preload" href="CV_Mahuna_Dominique_MEDJE.pdf" as="document">
+
+  <!-- DNS prefetch & preconnect Google Fonts -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- Google Fonts : uniquement les weights utilisés -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Urbanist:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
@@ -1156,6 +1166,10 @@
           alt="Portrait professionnel de Mahuna Raphaël Dominique MEDJE" 
           class="hero-photo"
           loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          width="560"
+          height="720"
         >
       </div>
 
