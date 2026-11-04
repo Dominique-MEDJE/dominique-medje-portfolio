@@ -784,33 +784,270 @@
 
     .certs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 16px;
     }
 
     .cert-item {
       background-color: var(--bg-card);
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 16px 20px;
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.45;
+      border-radius: var(--radius-card);
+      padding: 16px 18px;
       display: flex;
-      align-items: baseline;
-      gap: 10px;
+      align-items: center;
+      gap: 14px;
+      transition: all var(--transition-base);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
 
-    .cert-item::before {
-      content: "✓";
+    .cert-item:hover {
+      background-color: var(--bg-card-hover);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--accent-glow);
+    }
+
+    .cert-thumb {
+      width: 58px;
+      height: 58px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: #0b0b0b;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cert-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-base);
+    }
+
+    .cert-item:hover .cert-thumb img {
+      transform: scale(1.08);
+    }
+
+    .cert-thumb-icon {
+      font-size: 22px;
       color: var(--accent);
-      font-weight: 800;
-      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .cert-item strong {
-      color: #FFFFFF;
+    .cert-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cert-title {
+      font-size: 13.5px;
       font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .cert-meta {
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(240, 90, 46, 0.14);
+      color: var(--accent);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .cert-action-hint {
+      color: var(--text-dim);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      transition: color var(--transition-base);
+    }
+
+    .cert-item:hover .cert-action-hint {
+      color: var(--accent);
+    }
+
+    .cert-arrow {
+      color: var(--text-dim);
+      font-size: 16px;
+      transition: transform var(--transition-base), color var(--transition-base);
+    }
+
+    .cert-item:hover .cert-arrow {
+      color: var(--accent);
+      transform: translateX(3px);
+    }
+
+    /* Modal / Lightbox Certificats */
+    .cert-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cert-modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cert-modal-dialog {
+      background: var(--bg-card);
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 920px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(240, 90, 46, 0.25);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cert-modal-backdrop.active .cert-modal-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .cert-modal-header {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: #141414;
+    }
+
+    .cert-modal-header-info {
+      min-width: 0;
+    }
+
+    .cert-modal-header-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #FFFFFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cert-modal-header-sub {
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .cert-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .cert-modal-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+      color: #FFFFFF;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      text-decoration: none;
+    }
+
+    .cert-modal-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #FFFFFF;
+    }
+
+    .cert-modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all var(--transition-base);
+    }
+
+    .cert-modal-close:hover {
+      background: #ff4747;
+      border-color: #ff4747;
+      transform: rotate(90deg);
+    }
+
+    .cert-modal-body {
+      flex: 1;
+      overflow: auto;
+      background: #080808;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 480px;
+      position: relative;
+      padding: 10px;
+    }
+
+    .cert-modal-body img {
+      max-width: 100%;
+      max-height: 74vh;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .cert-modal-body iframe {
+      width: 100%;
+      height: 74vh;
+      border: none;
+      background: #FFFFFF;
+      border-radius: 6px;
     }
 
     /* ==========================================================================
@@ -1428,32 +1665,217 @@
 
         <!-- Certifications & formations continues -->
         <div>
-          <h3 class="edu-group-title">Certifications & Formations continues</h3>
+          <h3 class="edu-group-title">Certifications & Formations continues (Cliquer pour voir l'attestation)</h3>
           <div class="certs-grid">
-            <div class="cert-item">
-              <div><strong>Spécialisation Gestion de Projet 360°</strong> (badges Audit, Budget, Web, Campagne & KPI) – en cours (2026)</div>
+            
+            <!-- 1. DSSR (Image PNG) -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-dssr.png', 'image', 'Défense des droits en santé sexuelle & reproductive (DSSR)', 'Body Rights Defender Africa · 2026')">
+              <div class="cert-thumb">
+                <img src="assets/certs/cert-dssr-thumb.jpg" alt="Aperçu DSSR" loading="lazy">
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Défense des droits en santé sexuelle & reproductive (DSSR)</div>
+                <div class="cert-meta">
+                  <span>Body Rights Defender Africa</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir l'attestation officielle</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
-            <div class="cert-item">
-              <div><strong>Pilotage de projet de développement & cadre logique</strong> – Campus Groupe AFD / FERDI – 2025</div>
+
+            <!-- 2. Gestionnaire PEV (OMS/OPS) -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-pev-oms.pdf', 'pdf', 'Gestionnaire du Programme Élargi de Vaccination (PEV)', 'OPS / OMS · 2025 · Maladies évitables par la vaccination')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">📜</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Gestionnaire du Programme Élargi de Vaccination (PEV)</div>
+                <div class="cert-meta">
+                  <span>OPS / OMS</span>
+                  <span class="cert-badge">2025</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir le certificat officiel</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
-            <div class="cert-item">
-              <div><strong>Fondamentaux de la gestion de projet & leadership</strong> – DisasterReady / Cornerstone Foundation – 2026</div>
+
+            <!-- 3. Pilotage de projet AFD / FERDI -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-pilotage-projet-afd.pdf', 'pdf', 'Pilotage de projet de développement & cadre logique', 'Campus Groupe AFD / FERDI · 2025')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">📈</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Mise en œuvre & Pilotage de projet de développement</div>
+                <div class="cert-meta">
+                  <span>Campus Groupe AFD / FERDI</span>
+                  <span class="cert-badge">2025</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir le certificat officiel</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
-            <div class="cert-item">
-              <div><strong>Marketing numérique (D-CLIC)</strong> – OIF – 2026</div>
+
+            <!-- 4. Fondamentaux gestion de projet DisasterReady -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-gestion-projet.pdf', 'pdf', 'Fondamentaux de la gestion de projet', 'DisasterReady / Cornerstone Foundation · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">🎯</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Fondamentaux de la gestion de projet</div>
+                <div class="cert-meta">
+                  <span>DisasterReady / Cornerstone</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir le certificat officiel</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
-            <div class="cert-item">
-              <div><strong>Protection sociale & économie des soins en Afrique (87,5 %)</strong> – IDEP / CEA (Nations Unies) – 2026</div>
+
+            <!-- 5. Fondamentaux du leadership DisasterReady -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-leadership.pdf', 'pdf', 'Fondamentaux du leadership humanitaire', 'DisasterReady / Cornerstone OnDemand · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">👥</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Fondamentaux du leadership</div>
+                <div class="cert-meta">
+                  <span>DisasterReady / Cornerstone</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir le certificat officiel</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
-            <div class="cert-item">
-              <div><strong>Gestionnaire du Programme Élargi de Vaccination (PEV)</strong> – OPS/OMS – 2025</div>
+
+            <!-- 6. Protection sociale & économie des soins Nations Unies (IDEP / CEA) -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-protection-sociale.pdf', 'pdf', 'Protection sociale & économie des soins en Afrique (87,5 %)', 'IDEP / CEA (Nations Unies) · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">🌍</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Protection sociale & économie des soins en Afrique</div>
+                <div class="cert-meta">
+                  <span>IDEP / CEA (Nations Unies)</span>
+                  <span class="cert-badge">Score 87,5 %</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir l'attestation de réussite</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
-            <div class="cert-item">
-              <div><strong>Défense des droits en santé sexuelle & reproductive (DSSR)</strong> – Body Rights Defender Africa – 2026</div>
+
+            <!-- 7. Marketing numérique (D-CLIC / OIF) -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-marketing-numerique.pdf', 'pdf', 'Formation en Marketing Numérique (Programme D-CLIC)', 'Organisation Internationale de la Francophonie (OIF) · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">📱</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Marketing Numérique (D-CLIC)</div>
+                <div class="cert-meta">
+                  <span>OIF / D-CLIC</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir l'attestation de formation</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
-            <div class="cert-item">
-              <div><strong>Introduction à l'égalité des sexes pour le personnel de l'ONU</strong> – ONU Femmes / Agora UNICEF – 2026</div>
+
+            <!-- 8. Genre & Égalité des sexes (ONU Femmes / Agora UNICEF) -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-genre-onu-femmes.pdf', 'pdf', 'Je connais le genre : introduction à l\'égalité des sexes', 'ONU Femmes / Agora UNICEF · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">⚖️</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Je connais le genre : Introduction à l'égalité des sexes</div>
+                <div class="cert-meta">
+                  <span>ONU Femmes / UNICEF</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir l'attestation de formation</div>
+              </div>
+              <div class="cert-arrow">→</div>
             </div>
+
+            <!-- 9. Droits humains & développement durable (Campus Groupe AFD) -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-droits-humains.pdf', 'pdf', 'Droits humains et développement durable', 'Campus Groupe AFD · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">🕊️</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Droits humains & Développement durable</div>
+                <div class="cert-meta">
+                  <span>Campus Groupe AFD</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir le certificat officiel</div>
+              </div>
+              <div class="cert-arrow">→</div>
+            </div>
+
+            <!-- 10. De l'idée à un projet (Campus Groupe AFD) -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-idee-projet.pdf', 'pdf', 'De l\'idée à un projet de développement', 'Campus Groupe AFD · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">💡</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">De l'idée à un projet de développement</div>
+                <div class="cert-meta">
+                  <span>Campus Groupe AFD</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir le certificat officiel</div>
+              </div>
+              <div class="cert-arrow">→</div>
+            </div>
+
+            <!-- 11. Intelligence Artificielle en Éducation -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-ia-education.pdf', 'pdf', 'Intelligence Artificielle en Éducation', 'Attestation de formation · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">🤖</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Intelligence Artificielle en Éducation</div>
+                <div class="cert-meta">
+                  <span>Formation continue</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir le certificat officiel</div>
+              </div>
+              <div class="cert-arrow">→</div>
+            </div>
+
+            <!-- 12. CIAS-SRR 2026 -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-cias-srr.pdf', 'pdf', 'Conférence & Formation CIAS-SRR 2026', 'Attestation de participation & formation · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">🩺</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Conférence & Formation CIAS-SRR</div>
+                <div class="cert-meta">
+                  <span>Santé de la reproduction</span>
+                  <span class="cert-badge">2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir l'attestation officielle</div>
+              </div>
+              <div class="cert-arrow">→</div>
+            </div>
+
+            <!-- 13. Spécialisation Gestion de Projet 360° -->
+            <div class="cert-item" onclick="openCertModal('assets/certs/cert-hub.pdf', 'pdf', 'Spécialisation Gestion de Projet 360° & Portfolio Badges', 'Cabinet RAPHA / Programme 360° · 2026')">
+              <div class="cert-thumb">
+                <span class="cert-thumb-icon">⭐</span>
+              </div>
+              <div class="cert-content">
+                <div class="cert-title">Spécialisation Gestion de Projet 360°</div>
+                <div class="cert-meta">
+                  <span>Badges Audit, Budget, Web, Campagne & KPI</span>
+                  <span class="cert-badge">Hub 2026</span>
+                </div>
+                <div class="cert-action-hint">🔍 Voir les attestations & badges</div>
+              </div>
+              <div class="cert-arrow">→</div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1517,7 +1939,30 @@
   </div>
 
   <!-- ==========================================================================
-       JAVASCRIPT VANILLA : INTERACTIONS, SCROLLSPY, BURGER MENU
+       MODAL / LIGHTBOX POUR LES CERTIFICATS & ATTESTATIONS
+       ========================================================================== -->
+  <div class="cert-modal-backdrop" id="certModalBackdrop" onclick="closeCertModal(event)" role="dialog" aria-modal="true" aria-labelledby="certModalTitle">
+    <div class="cert-modal-dialog" onclick="event.stopPropagation()">
+      <div class="cert-modal-header">
+        <div class="cert-modal-header-info">
+          <div class="cert-modal-header-title" id="certModalTitle">Titre de l'attestation</div>
+          <div class="cert-modal-header-sub" id="certModalSub">Organisme émetteur</div>
+        </div>
+        <div class="cert-modal-actions">
+          <a href="#" id="certModalDownload" target="_blank" rel="noopener noreferrer" class="cert-modal-btn">
+            <span>⤓</span> Ouvrir / Télécharger
+          </a>
+          <button type="button" class="cert-modal-close" onclick="closeCertModal()" aria-label="Fermer la vue du certificat">×</button>
+        </div>
+      </div>
+      <div class="cert-modal-body" id="certModalBody">
+        <!-- Contenu dynamique injecté en JS (image ou iframe PDF) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT VANILLA : INTERACTIONS, SCROLLSPY, BURGER MENU & MODAL
        ========================================================================== -->
   <script>
     // 1. Menu Mobile
@@ -1565,7 +2010,54 @@
     window.addEventListener('scroll', updateActiveNav, { passive: true });
     window.addEventListener('load', updateActiveNav);
 
-    // 3. Parallaxe très légère sur le portrait hero au mouvement de la souris (desktop)
+    // 3. Modal Lightbox Certificats & Attestations
+    const certModalBackdrop = document.getElementById('certModalBackdrop');
+    const certModalTitle = document.getElementById('certModalTitle');
+    const certModalSub = document.getElementById('certModalSub');
+    const certModalDownload = document.getElementById('certModalDownload');
+    const certModalBody = document.getElementById('certModalBody');
+
+    function openCertModal(filePath, fileType, title, subtitle) {
+      certModalTitle.textContent = title || 'Attestation officielle';
+      certModalSub.textContent = subtitle || '';
+      certModalDownload.href = filePath;
+
+      certModalBody.innerHTML = '';
+      if (fileType === 'image') {
+        const img = document.createElement('img');
+        img.src = filePath;
+        img.alt = title;
+        img.loading = 'eager';
+        certModalBody.appendChild(img);
+      } else {
+        const iframe = document.createElement('iframe');
+        iframe.src = filePath + '#toolbar=1&navpanes=0';
+        iframe.title = title;
+        certModalBody.appendChild(iframe);
+      }
+
+      certModalBackdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCertModal(e) {
+      if (e && e.target !== certModalBackdrop && !e.target.classList.contains('cert-modal-close')) {
+        return;
+      }
+      certModalBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        certModalBody.innerHTML = '';
+      }, 250);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && certModalBackdrop.classList.contains('active')) {
+        closeCertModal();
+      }
+    });
+
+    // 4. Parallaxe très légère sur le portrait hero au mouvement de la souris (desktop)
     const heroPhotoWrapper = document.getElementById('heroPhotoWrapper');
     const hero = document.getElementById('hero');
 
