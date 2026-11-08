@@ -9,14 +9,6 @@
   <!-- Preload portrait critique -->
   <link rel="preload" href="assets/mahuna-cutout.png" as="image" type="image/png">
 
-  <!-- PDF.js pour affichage et prévisualisation directe et instantanée des certificats -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script>
-    if (typeof pdfjsLib !== 'undefined') {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-  </script>
-
   <!-- Preload CV PDF -->
   <link rel="preload" href="CV_Mahuna_Dominique_MEDJE.pdf" as="document">
 
@@ -893,7 +885,7 @@
     .cert-slide-preview {
       width: 100%;
       height: 220px;
-      background: #090909;
+      background: #111111;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -907,32 +899,31 @@
       height: 100%;
       object-fit: cover;
       object-position: center top;
-      transition: transform var(--transition-base);
+      image-orientation: from-image;
+      transition: transform var(--transition-base), opacity 0.35s ease;
+      background-color: #1a1a1a;
+      opacity: 0;
     }
 
-    .cert-slide-preview canvas {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-      transition: transform var(--transition-base);
+    .cert-slide-preview img.loaded {
+      opacity: 1;
     }
 
-    .cert-slide:hover .cert-slide-preview img,
-    .cert-slide:hover .cert-slide-preview canvas {
+    .cert-slide:hover .cert-slide-preview img {
       transform: scale(1.05);
     }
 
     .cert-preview-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(14, 14, 14, 0.9) 0%, transparent 60%);
+      background: linear-gradient(to top, rgba(14, 14, 14, 0.92) 0%, rgba(14, 14, 14, 0.2) 60%, transparent 100%);
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
       padding: 12px 14px;
-      opacity: 0.9;
+      opacity: 0.95;
       transition: opacity var(--transition-base);
+      pointer-events: none;
     }
 
     .cert-slide:hover .cert-preview-overlay {
@@ -942,20 +933,29 @@
     .cert-zoom-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      background: rgba(240, 90, 46, 0.9);
+      gap: 6px;
+      padding: 5px 11px;
+      background: rgba(240, 90, 46, 0.92);
       color: #FFFFFF;
       font-size: 11px;
       font-weight: 700;
+      letter-spacing: 0.2px;
       border-radius: var(--radius-pill);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       transform: translateY(2px);
-      transition: transform var(--transition-base);
+      transition: transform var(--transition-base), background-color var(--transition-base);
     }
 
     .cert-slide:hover .cert-zoom-pill {
       transform: translateY(0);
+      background: var(--accent);
+    }
+
+    .cert-zoom-icon {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      flex-shrink: 0;
     }
 
     .cert-slide-info {
@@ -1115,7 +1115,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 18px;
+      flex-shrink: 0;
       transition: all var(--transition-base);
     }
 
@@ -1143,15 +1143,7 @@
       object-fit: contain;
       border-radius: 6px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
-
-    .cert-modal-body canvas {
-      max-width: 100%;
-      max-height: 76vh;
-      object-fit: contain;
-      border-radius: 6px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      background: #FFFFFF;
+      image-orientation: from-image;
     }
 
     .cert-modal-body iframe {
@@ -1200,19 +1192,29 @@
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
 
-    .contact-links-list li a {
+    .contact-links-list li a,
+    .contact-links-list li .contact-item-static {
       font-size: 16px;
       font-weight: 600;
       color: #FFFFFF;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      text-decoration: none;
+      transition: color var(--transition-base);
     }
 
     .contact-links-list li a:hover {
+      color: var(--accent);
+    }
+
+    .contact-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
       color: var(--accent);
     }
 
@@ -1268,7 +1270,6 @@
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--line);
       color: #FFFFFF;
-      font-size: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1477,14 +1478,16 @@
       <!-- Bouton hamburger carré blanc arrondi (36px) -->
       <div class="header-burger">
         <button class="burger-btn" id="burgerBtn" aria-label="Ouvrir le menu de navigation mobile">
-          ≡
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
       </div>
     </header>
 
     <!-- MENU MOBILE PLEIN ÉCRAN -->
     <div class="mobile-nav-overlay" id="mobileOverlay" role="dialog" aria-modal="true" aria-label="Navigation mobile">
-      <button class="mobile-nav-close" id="mobileCloseBtn" aria-label="Fermer le menu">✕</button>
+      <button class="mobile-nav-close" id="mobileCloseBtn" aria-label="Fermer le menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
       <nav class="mobile-nav-links">
         <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">01 À propos</a>
         <a href="#competences" class="mobile-nav-link" onclick="closeMobileMenu()">02 Compétences</a>
@@ -1548,7 +1551,7 @@
       <!-- Bas-gauche : Indicateur Scroll Down -->
       <div class="hero-scroll-indicator">
         <div class="scroll-pill" aria-hidden="true">
-          <span class="scroll-arrow">↓</span>
+          <span class="scroll-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></span>
         </div>
         <div class="scroll-text">
           Défiler<br>vers le bas
@@ -1783,21 +1786,28 @@
               <div class="certs-carousel-count">Défilement interactif : <span>13 attestations et diplômes certifiés</span> (cliquez sur une attestation pour l'agrandir)</div>
             </div>
             <div class="certs-carousel-arrows">
-              <button type="button" class="carousel-btn" onclick="scrollCerts(-1)" aria-label="Certificats précédents">←</button>
-              <button type="button" class="carousel-btn" onclick="scrollCerts(1)" aria-label="Certificats suivants">→</button>
+              <button type="button" class="carousel-btn" onclick="scrollCerts(-1)" aria-label="Certificats précédents">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button type="button" class="carousel-btn" onclick="scrollCerts(1)" aria-label="Certificats suivants">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
             </div>
           </div>
 
           <div class="certs-carousel-wrapper">
             <div class="certs-carousel" id="certsCarousel">
               
-              <!-- 1. DSSR (Image PNG) -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-dssr.png', 'image', 'Défense des droits en santé sexuelle & reproductive (DSSR)', 'Body Rights Defender Africa · 2026')">
+              <!-- 1. DSSR (Body Rights Defender Africa) -->
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-dssr-full.webp', 'assets/certs/cert-dssr.png', 'Défense des droits en santé sexuelle & reproductive (DSSR)', 'Body Rights Defender Africa · 2026')">
                 <div class="cert-slide-preview">
-                  <img src="assets/certs/cert-dssr-thumb.jpg" alt="Attestation DSSR" loading="lazy">
+                  <img src="assets/certs/cert-dssr-thumb.webp" alt="Attestation DSSR" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1810,12 +1820,15 @@
               </div>
 
               <!-- 2. Gestionnaire PEV (OMS/OPS) -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-pev-oms.pdf', 'pdf', 'Gestionnaire du Programme Élargi de Vaccination (PEV)', 'OPS / OMS · 2025 · Maladies évitables par la vaccination')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-pev-oms-full.webp', 'assets/certs/cert-pev-oms.pdf', 'Gestionnaire du Programme Élargi de Vaccination (PEV)', 'OPS / OMS · 2025 · Maladies évitables par la vaccination')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-pev-oms.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-pev-oms-thumb.webp" alt="Certificat PEV OMS" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">OPS / OMS · 2025</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1828,12 +1841,15 @@
               </div>
 
               <!-- 3. Pilotage de projet AFD / FERDI -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-pilotage-projet-afd.pdf', 'pdf', 'Pilotage de projet de développement & cadre logique', 'Campus Groupe AFD / FERDI · 2025')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-pilotage-projet-afd-full.webp', 'assets/certs/cert-pilotage-projet-afd.pdf', 'Mise en œuvre & Pilotage de projet de développement', 'Campus Groupe AFD / FERDI · 2025')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-pilotage-projet-afd.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-pilotage-projet-afd-thumb.webp" alt="Certificat Pilotage Projet AFD" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">AFD / FERDI · 2025</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1846,12 +1862,15 @@
               </div>
 
               <!-- 4. Fondamentaux gestion de projet DisasterReady -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-gestion-projet.pdf', 'pdf', 'Fondamentaux de la gestion de projet', 'DisasterReady / Cornerstone Foundation · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-gestion-projet-full.webp', 'assets/certs/cert-gestion-projet.pdf', 'Fondamentaux de la gestion de projet', 'DisasterReady / Cornerstone Foundation · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-gestion-projet.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-gestion-projet-thumb.webp" alt="Certificat Fondamentaux Gestion de Projet" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">DisasterReady · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1864,12 +1883,15 @@
               </div>
 
               <!-- 5. Fondamentaux du leadership DisasterReady -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-leadership.pdf', 'pdf', 'Fondamentaux du leadership humanitaire', 'DisasterReady / Cornerstone OnDemand · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-leadership-full.webp', 'assets/certs/cert-leadership.pdf', 'Fondamentaux du leadership humanitaire', 'DisasterReady / Cornerstone OnDemand · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-leadership.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-leadership-thumb.webp" alt="Certificat Fondamentaux du Leadership" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">DisasterReady · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1882,12 +1904,15 @@
               </div>
 
               <!-- 6. Protection sociale & économie des soins Nations Unies (IDEP / CEA) -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-protection-sociale.pdf', 'pdf', 'Protection sociale & économie des soins en Afrique (Score 87,5 %)', 'IDEP / CEA (Nations Unies) · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-protection-sociale-full.webp', 'assets/certs/cert-protection-sociale.pdf', 'Protection sociale & économie des soins en Afrique (Score 87,5 %)', 'IDEP / CEA (Nations Unies) · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-protection-sociale.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-protection-sociale-thumb.webp" alt="Attestation Protection Sociale ONU" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">IDEP / CEA (ONU) · 87,5 %</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1900,12 +1925,15 @@
               </div>
 
               <!-- 7. Marketing numérique (D-CLIC / OIF) -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-marketing-numerique.pdf', 'pdf', 'Formation en Marketing Numérique (Programme D-CLIC)', 'Organisation Internationale de la Francophonie (OIF) · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-marketing-numerique-full.webp', 'assets/certs/cert-marketing-numerique.pdf', 'Formation en Marketing Numérique (Programme D-CLIC)', 'Organisation Internationale de la Francophonie (OIF) · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-marketing-numerique.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-marketing-numerique-thumb.webp" alt="Attestation Marketing Numérique OIF" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">OIF / D-CLIC · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1918,12 +1946,15 @@
               </div>
 
               <!-- 8. Genre & Égalité des sexes (ONU Femmes / Agora UNICEF) -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-genre-onu-femmes.pdf', 'pdf', 'Je connais le genre : introduction à l\'égalité des sexes', 'ONU Femmes / Agora UNICEF · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-genre-onu-femmes-full.webp', 'assets/certs/cert-genre-onu-femmes.pdf', 'Je connais le genre : introduction à l\'égalité des sexes', 'ONU Femmes / Agora UNICEF · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-genre-onu-femmes.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-genre-onu-femmes-thumb.webp" alt="Attestation Genre ONU Femmes" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">ONU Femmes / UNICEF · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1936,12 +1967,15 @@
               </div>
 
               <!-- 9. Droits humains & développement durable (Campus Groupe AFD) -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-droits-humains.pdf', 'pdf', 'Droits humains et développement durable', 'Campus Groupe AFD · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-droits-humains-full.webp', 'assets/certs/cert-droits-humains.pdf', 'Droits humains et développement durable', 'Campus Groupe AFD · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-droits-humains.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-droits-humains-thumb.webp" alt="Certificat Droits Humains AFD" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">Campus AFD · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1953,17 +1987,20 @@
                 </div>
               </div>
 
-              <!-- 10. De l'idée à un projet (Campus Groupe AFD) -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-idee-projet.pdf', 'pdf', 'De l\'idée à un projet de développement', 'Campus Groupe AFD · 2026')">
+              <!-- 10. Passer de l'idée à un projet de développement (Campus Groupe AFD) -->
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-idee-projet-full.webp', 'assets/certs/cert-idee-projet.pdf', 'Passer de l\'idée à un projet de développement', 'Campus Groupe AFD · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-idee-projet.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-idee-projet-thumb.webp" alt="Certificat Passer de l'idée à un projet" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">Campus AFD · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
-                  <div class="cert-slide-title">De l'idée à un projet de développement</div>
+                  <div class="cert-slide-title">Passer de l'idée à un projet de développement</div>
                   <div class="cert-slide-meta">
                     <span class="cert-slide-org">Campus Groupe AFD</span>
                     <span style="color: var(--accent); font-weight: 700;">Certificat →</span>
@@ -1972,12 +2009,15 @@
               </div>
 
               <!-- 11. Intelligence Artificielle en Éducation -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-ia-education.pdf', 'pdf', 'Intelligence Artificielle en Éducation', 'Attestation de formation · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-ia-education-full.webp', 'assets/certs/cert-ia-education.pdf', 'Intelligence Artificielle en Éducation', 'Attestation de formation continue · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-ia-education.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-ia-education-thumb.webp" alt="Attestation IA en Éducation" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">Formation · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -1990,12 +2030,15 @@
               </div>
 
               <!-- 12. CIAS-SRR 2026 -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-cias-srr.pdf', 'pdf', 'Conférence & Formation CIAS-SRR 2026', 'Attestation de participation & formation · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-cias-srr-full.webp', 'assets/certs/cert-cias-srr.pdf', 'Conférence & Formation CIAS-SRR 2026', 'Attestation de participation & formation · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-cias-srr.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-cias-srr-thumb.webp" alt="Attestation CIAS-SRR" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">CIAS-SRR · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -2008,12 +2051,15 @@
               </div>
 
               <!-- 13. Spécialisation Gestion de Projet 360° -->
-              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-hub.pdf', 'pdf', 'Spécialisation Gestion de Projet 360° & Portfolio Badges', 'Cabinet RAPHA / Programme 360° · 2026')">
+              <div class="cert-slide" onclick="openCertModal('assets/certs/cert-hub-full.webp', 'assets/certs/cert-hub.pdf', 'Spécialisation Gestion de Projet 360° & Portfolio Badges', 'Cabinet RAPHA / Programme 360° · 2026')">
                 <div class="cert-slide-preview">
-                  <canvas data-pdf="assets/certs/cert-hub.pdf" class="pdf-thumb-canvas"></canvas>
+                  <img src="assets/certs/cert-hub-thumb.webp" alt="Badges Gestion de Projet 360°" width="600" height="425" loading="lazy" decoding="async" onload="this.classList.add('loaded')">
                   <div class="cert-preview-overlay">
                     <span class="cert-badge">Hub 360° · 2026</span>
-                    <span class="cert-zoom-pill">🔍 Plein écran</span>
+                    <span class="cert-zoom-pill">
+                      <svg class="cert-zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      Plein écran
+                    </span>
                   </div>
                 </div>
                 <div class="cert-slide-info">
@@ -2049,22 +2095,26 @@
           <ul class="contact-links-list">
             <li>
               <a href="mailto:dominiquemedje@gmail.com">
-                ✉ dominiquemedje@gmail.com
+                <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                dominiquemedje@gmail.com
               </a>
             </li>
             <li>
               <a href="tel:+2290190808942">
-                📞 +229 01 90 80 89 42
+                <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                +229 01 90 80 89 42
               </a>
             </li>
             <li>
-              <span style="font-size: 15px; color: var(--text-muted);">
-                📍 Parakou, Borgou, Bénin
+              <span class="contact-item-static">
+                <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Parakou, Borgou, Bénin
               </span>
             </li>
             <li>
               <a href="https://www.linkedin.com/in/dominiquemedje" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">
-                🔗 linkedin.com/in/dominiquemedje
+                <svg class="contact-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.67 1.67 0 1 0-.01-3.34 1.67 1.67 0 0 0 .01 3.34m1.39 9.74V9.97H5.06v8.53h2.79Z"/></svg>
+                linkedin.com/in/dominiquemedje
               </a>
             </li>
           </ul>
@@ -2100,9 +2150,12 @@
         </div>
         <div class="cert-modal-actions">
           <a href="#" id="certModalDownload" target="_blank" rel="noopener noreferrer" class="cert-modal-btn">
-            <span>⤓</span> Ouvrir / Télécharger
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Ouvrir / Télécharger
           </a>
-          <button type="button" class="cert-modal-close" onclick="closeCertModal()" aria-label="Fermer la vue du certificat">×</button>
+          <button type="button" class="cert-modal-close" onclick="closeCertModal()" aria-label="Fermer la vue du certificat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
         </div>
       </div>
       <div class="cert-modal-body" id="certModalBody">
@@ -2169,45 +2222,6 @@
       certsCarousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
 
-    // Rendu automatique des vignettes PDF via PDF.js dès que le document est visible
-    function renderPdfThumbnails() {
-      if (typeof pdfjsLib === 'undefined') return;
-
-      const pdfCanvases = document.querySelectorAll('.pdf-thumb-canvas');
-      const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const canvas = entry.target;
-            const pdfUrl = canvas.getAttribute('data-pdf');
-            obs.unobserve(canvas);
-
-            if (pdfUrl) {
-              pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-                return pdf.getPage(1);
-              }).then(page => {
-                const viewport = page.getViewport({ scale: 0.5 });
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-                const ctx = canvas.getContext('2d');
-                const renderContext = {
-                  canvasContext: ctx,
-                  viewport: viewport
-                };
-                page.render(renderContext);
-              }).catch(err => {
-                console.warn("Aperçu PDF différé :", err);
-              });
-            }
-          }
-        });
-      }, { rootMargin: '200px' });
-
-      pdfCanvases.forEach(c => observer.observe(c));
-    }
-
-    window.addEventListener('DOMContentLoaded', renderPdfThumbnails);
-    window.addEventListener('load', renderPdfThumbnails);
-
     // 4. Modal Lightbox Certificats & Attestations
     const certModalBackdrop = document.getElementById('certModalBackdrop');
     const certModalTitle = document.getElementById('certModalTitle');
@@ -2215,48 +2229,25 @@
     const certModalDownload = document.getElementById('certModalDownload');
     const certModalBody = document.getElementById('certModalBody');
 
-    function openCertModal(filePath, fileType, title, subtitle) {
+    function openCertModal(previewUrl, downloadUrl, title, subtitle) {
       certModalTitle.textContent = title || 'Attestation officielle';
       certModalSub.textContent = subtitle || '';
-      certModalDownload.href = filePath;
+      certModalDownload.href = downloadUrl || previewUrl;
 
       certModalBody.innerHTML = '';
-      if (fileType === 'image') {
-        const img = document.createElement('img');
-        img.src = filePath;
-        img.alt = title;
-        img.loading = 'eager';
-        certModalBody.appendChild(img);
-      } else {
-        // Affichage haute définition dans la visionneuse avec canvas direct si PDF.js est chargé
-        if (typeof pdfjsLib !== 'undefined') {
-          const canvas = document.createElement('canvas');
-          certModalBody.appendChild(canvas);
-          pdfjsLib.getDocument(filePath).promise.then(pdf => pdf.getPage(1)).then(page => {
-            const scale = Math.min(1.8, (window.innerWidth * 0.85) / page.getViewport({ scale: 1 }).width);
-            const viewport = page.getViewport({ scale: scale || 1.2 });
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            const ctx = canvas.getContext('2d');
-            page.render({ canvasContext: ctx, viewport: viewport });
-          }).catch(() => {
-            // Fallback iframe
-            certModalBody.innerHTML = `<iframe src="${filePath}#toolbar=1" title="${title}"></iframe>`;
-          });
-        } else {
-          const iframe = document.createElement('iframe');
-          iframe.src = filePath + '#toolbar=1&navpanes=0';
-          iframe.title = title;
-          certModalBody.appendChild(iframe);
-        }
-      }
+      const img = document.createElement('img');
+      img.src = previewUrl;
+      img.alt = title || 'Certificat officiel';
+      img.loading = 'eager';
+      img.decoding = 'async';
+      certModalBody.appendChild(img);
 
       certModalBackdrop.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
     function closeCertModal(e) {
-      if (e && e.target !== certModalBackdrop && !e.target.classList.contains('cert-modal-close')) {
+      if (e && e.target !== certModalBackdrop && !e.target.classList.contains('cert-modal-close') && !e.target.closest('.cert-modal-close')) {
         return;
       }
       certModalBackdrop.classList.remove('active');
